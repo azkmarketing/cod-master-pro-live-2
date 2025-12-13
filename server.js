@@ -134,6 +134,26 @@ app.get('/auth/callback', async (req, res) => {
 // API ROUTES
 // ============================================
 
+// Health check endpoint (no auth required)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    server: 'running',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    mongodb_uri: process.env.MONGODB_URI ? 'configured' : 'missing',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Test endpoint (no auth required)
+app.get('/api/test', (req, res) => {
+  res.json({
+    message: 'COD Master Pro API is working!',
+    version: '1.0.0',
+    shopify: 'initialized'
+  });
+});
+
 // Middleware to verify Shopify session
 const verifyShopify = (req, res, next) => {
   if (!req.session.shop || !req.session.accessToken) {

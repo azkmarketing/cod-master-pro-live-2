@@ -2,7 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const { Shopify, ApiVersion } = require('@shopify/shopify-api');
+const { shopifyApi, ApiVersion, Session } = require('@shopify/shopify-api');
+const { MemorySessionStorage } = require('@shopify/shopify-app-session-storage-memory');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
@@ -26,15 +27,15 @@ app.use(session({
 }));
 
 // Initialize Shopify API
-const shopify = new Shopify({
+const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
   scopes: ['read_products', 'write_products', 'read_orders', 'write_orders', 'read_customers', 'write_customers'],
   hostName: process.env.HOST.replace(/https?:\/\//, ''),
-  hostScheme: process.env.HOST.split('://')[0],
+  hostScheme: process.env.HOST.split('://')[0] || 'https',
   apiVersion: ApiVersion.April23,
   isEmbeddedApp: true,
-  sessionStorage: new Shopify.Session.MemorySessionStorage(),
+  sessionStorage: new MemorySessionStorage(),
 });
 
 // MongoDB Connection

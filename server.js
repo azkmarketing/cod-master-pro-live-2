@@ -8,6 +8,7 @@ require('@shopify/shopify-api/adapters/node'); // ← CRITICAL: Load Node.js ada
 const { MemorySessionStorage } = require('@shopify/shopify-app-session-storage-memory');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +16,10 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // Serve your React app
+
+// Serve static files from root directory (where index.html is)
+app.use(express.static(path.join(__dirname)));
+app.use('/src', express.static(path.join(__dirname, 'src')));
 
 // Session configuration
 app.use(session({
@@ -339,9 +343,9 @@ app.post('/webhooks/orders/create', async (req, res) => {
 // SERVE REACT APP
 // ============================================
 
-// Serve the React app for all other routes
+// Serve the React app for all other routes (must be last!)
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ============================================

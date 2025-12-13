@@ -1,175 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COD Master Pro - Test</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 60px 40px;
-            max-width: 600px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        .icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            color: #2d3748;
-            font-size: 36px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-        
-        .status {
-            display: inline-block;
-            background: #48bb78;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-bottom: 30px;
-            font-size: 18px;
-        }
-        
-        .info {
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 30px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .info-item:last-child {
-            border-bottom: none;
-        }
-        
-        .label {
-            color: #718096;
-            font-weight: 600;
-        }
-        
-        .value {
-            color: #2d3748;
-            font-weight: 700;
-        }
-        
-        .success {
-            color: #48bb78;
-        }
-        
-        .error {
-            color: #f56565;
-        }
-        
-        .button {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 16px 32px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        
-        .footer {
-            margin-top: 30px;
-            color: #718096;
-            font-size: 14px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COD Master Pro - Professional Shopify COD App</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Smooth transitions */
+    * {
+      transition-property: background-color, border-color, color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+    
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon">🎉</div>
-        <h1>COD Master Pro</h1>
-        <div class="status">✅ Server Running!</div>
-        
-        <div class="info">
-            <div class="info-item">
-                <span class="label">Server Status:</span>
-                <span class="value success">✅ Online</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Shopify API:</span>
-                <span class="value success">✅ Connected</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Database:</span>
-                <span class="value error" id="db-status">⏳ Checking...</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Environment:</span>
-                <span class="value">Production</span>
-            </div>
-        </div>
-        
-        <p style="color: #4a5568; margin: 20px 0; line-height: 1.6;">
-            Your COD Master Pro app is successfully deployed on Railway! 
-            Once you fix the MongoDB connection, your full dashboard will be available.
-        </p>
-        
-        <a href="/api/health" class="button">Check API Health</a>
-        
-        <div class="footer">
-            Powered by AKZ Marketing LLC | Railway + Shopify
-        </div>
-    </div>
+  <div id="root"></div>
+
+  <!-- Router Implementation -->
+  <script type="text/babel">
+    const { useState, useEffect, createElement: h } = React;
+    const { createRoot } = ReactDOM;
     
-    <script>
-        // Check MongoDB status
-        fetch('/api/health')
-            .then(res => res.json())
-            .then(data => {
-                const dbStatus = document.getElementById('db-status');
-                if (data.database === 'connected') {
-                    dbStatus.innerHTML = '✅ Connected';
-                    dbStatus.className = 'value success';
-                } else {
-                    dbStatus.innerHTML = '❌ Not Connected';
-                    dbStatus.className = 'value error';
-                }
-            })
-            .catch(() => {
-                const dbStatus = document.getElementById('db-status');
-                dbStatus.innerHTML = '❌ Error';
-                dbStatus.className = 'value error';
-            });
-    </script>
+    // Simple Router Context
+    const RouterContext = React.createContext();
+    
+    const BrowserRouter = ({ children }) => {
+      const [path, setPath] = useState(window.location.pathname);
+      
+      useEffect(() => {
+        const handlePopState = () => setPath(window.location.pathname);
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+      }, []);
+      
+      const navigate = (to) => {
+        window.history.pushState({}, '', to);
+        setPath(to);
+      };
+      
+      return h(RouterContext.Provider, { value: { path, navigate } }, children);
+    };
+    
+    const useLocation = () => {
+      const context = React.useContext(RouterContext);
+      return { pathname: context.path };
+    };
+    
+    const useNavigate = () => {
+      const context = React.useContext(RouterContext);
+      return context.navigate;
+    };
+    
+    const Link = ({ to, onClick, className, children }) => {
+      const navigate = useNavigate();
+      
+      const handleClick = (e) => {
+        e.preventDefault();
+        navigate(to);
+        if (onClick) onClick();
+      };
+      
+      return h('a', { href: to, onClick: handleClick, className }, children);
+    };
+    
+    const Routes = ({ children }) => {
+      const { path } = React.useContext(RouterContext);
+      const routes = React.Children.toArray(children);
+      const route = routes.find(r => r.props.path === path) || routes.find(r => r.props.path === '/');
+      return route ? route.props.element : null;
+    };
+    
+    const Route = () => null;
+    
+    // Lucide Icon Components
+    const Icon = ({ name, size = 24, className = '', ...props }) => {
+      useEffect(() => {
+        lucide.createIcons();
+      });
+      return h('i', { 'data-lucide': name, className, style: { width: size, height: size }, ...props });
+    };
+
+    const Home = () => Icon({ name: 'home' });
+    const Settings = () => Icon({ name: 'settings' });
+    const BarChart3 = () => Icon({ name: 'bar-chart-3' });
+    const FileText = () => Icon({ name: 'file-text' });
+    const Percent = () => Icon({ name: 'percent' });
+    const ArrowUpDown = () => Icon({ name: 'arrow-up-down' });
+    const MessageSquare = () => Icon({ name: 'message-square' });
+    const CreditCard = () => Icon({ name: 'credit-card' });
+    const Menu = () => Icon({ name: 'menu' });
+    const X = () => Icon({ name: 'x' });
+    const Package = () => Icon({ name: 'package' });
+  </script>
+
+  <!-- Load All Pages -->
+  <script type="text/babel" src="src/pages/Dashboard.tsx"></script>
+  <script type="text/babel" src="src/pages/FormBuilder.tsx"></script>
+  <script type="text/babel" src="src/pages/QuantityOffers.tsx"></script>
+  <script type="text/babel" src="src/pages/UpsellsDownsells.tsx"></script>
+  <script type="text/babel" src="src/pages/Integrations.tsx"></script>
+  <script type="text/babel" src="src/pages/Analytics.tsx"></script>
+  <script type="text/babel" src="src/pages/Settings.tsx"></script>
+  <script type="text/babel" src="src/pages/Orders.tsx"></script>
+  
+  <!-- Main App -->
+  <script type="text/babel" src="src/App.tsx"></script>
+  
+  <!-- Initialize App -->
+  <script type="text/babel">
+    const root = createRoot(document.getElementById('root'));
+    root.render(h(App));
+    
+    // Initialize Lucide Icons
+    setTimeout(() => {
+      lucide.createIcons();
+    }, 100);
+  </script>
 </body>
 </html>

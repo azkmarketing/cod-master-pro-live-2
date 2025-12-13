@@ -2,8 +2,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const Shopify = require('@shopify/shopify-api').Shopify;
-const { ApiVersion } = require('@shopify/shopify-api');
+const { Shopify, ApiVersion } = require('@shopify/shopify-api');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
@@ -27,15 +26,15 @@ app.use(session({
 }));
 
 // Initialize Shopify API
-Shopify.Context.initialize({
-  API_KEY: process.env.SHOPIFY_API_KEY,
-  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-  SCOPES: ['read_products', 'write_products', 'read_orders', 'write_orders', 'read_customers', 'write_customers'],
-  HOST_NAME: process.env.HOST.replace(/https?:\/\//, ''),
-  HOST_SCHEME: process.env.HOST.split('://')[0],
-  API_VERSION: ApiVersion.April23,
-  IS_EMBEDDED_APP: true,
-  SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
+const shopify = new Shopify({
+  apiKey: process.env.SHOPIFY_API_KEY,
+  apiSecretKey: process.env.SHOPIFY_API_SECRET,
+  scopes: ['read_products', 'write_products', 'read_orders', 'write_orders', 'read_customers', 'write_customers'],
+  hostName: process.env.HOST.replace(/https?:\/\//, ''),
+  hostScheme: process.env.HOST.split('://')[0],
+  apiVersion: ApiVersion.April23,
+  isEmbeddedApp: true,
+  sessionStorage: new Shopify.Session.MemorySessionStorage(),
 });
 
 // MongoDB Connection
@@ -90,13 +89,13 @@ const Order = mongoose.model('Order', OrderSchema);
 // OAuth start
 app.get('/auth', async (req, res) => {
   try {
-    const authRoute = await Shopify.Auth.beginAuth(
-      req,
-      res,
-      req.query.shop,
-      '/auth/callback',
-      false
-    );
+    const authRoute = await shopify.auth.begin({
+      shop: req.query.shop,
+      callbackPath: '/auth/callback',
+      isOnline: false,
+      rawRequest: req,
+      rawResponse: res,
+    });
     res.redirect(authRoute);
   } catch (error) {
     console.error('Auth error:', error);
@@ -107,17 +106,16 @@ app.get('/auth', async (req, res) => {
 // OAuth callback
 app.get('/auth/callback', async (req, res) => {
   try {
-    const session = await Shopify.Auth.validateAuthCallback(
-      req,
-      res,
-      req.query
-    );
+    const callback = await shopify.auth.callback({
+      rawRequest: req,
+      rawResponse: res,
+    });
     
-    req.session.shop = session.shop;
-    req.session.accessToken = session.accessToken;
+    req.session.shop = callback.session.shop;
+    req.session.accessToken = callback.session.accessToken;
     
     // Redirect to app
-    res.redirect('/?shop=' + session.shop);
+    res.redirect('/?shop=' + callback.session.shop);
   } catch (error) {
     console.error('Callback error:', error);
     res.status(500).send('Authentication callback failed');
@@ -262,7 +260,7 @@ app.post('/api/orders', verifyShopify, async (req, res) => {
     await order.save();
     
     // Create order in Shopify
-    const client = new Shopify.Clients.Rest(req.shop, req.accessToken);
+    const client = new shopify.clients.Rest({session: {shop: req.shop, accessToken: req.accessToken}});
     const shopifyOrder = await client.post({
       path: 'orders',
       data: {

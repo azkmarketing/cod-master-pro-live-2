@@ -147,6 +147,12 @@
             transform: translateY(-1px);
         }
         
+        .btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .btn-secondary {
             background: #e2e8f0;
             color: #4a5568;
@@ -154,6 +160,14 @@
         
         .btn-secondary:hover {
             background: #cbd5e0;
+        }
+        
+        .btn-danger {
+            background: #f56565;
+        }
+        
+        .btn-danger:hover {
+            background: #e53e3e;
         }
         
         /* Form */
@@ -168,17 +182,23 @@
             color: #4a5568;
         }
         
-        .form-input {
+        .form-input, .form-textarea, .form-select {
             width: 100%;
             padding: 12px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             font-size: 14px;
+            font-family: inherit;
         }
         
-        .form-input:focus {
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
             border-color: #667eea;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
         }
         
         /* Table */
@@ -208,6 +228,10 @@
             border-bottom: none;
         }
         
+        .table tr:hover {
+            background: #f7fafc;
+        }
+        
         .badge {
             padding: 4px 12px;
             border-radius: 12px;
@@ -224,227 +248,312 @@
             background: #feebc8;
             color: #7c2d12;
         }
+        
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+        
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .form-list {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .form-item-info h3 {
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .form-item-info p {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .form-item-actions {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
         <div class="logo">COD <span>Master Pro</span></div>
-        <div class="status-badge">✅ Online</div>
+        <div class="status-badge" id="status-badge">✅ Online</div>
     </div>
     
     <!-- Main Container -->
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="nav-item active" onclick="showPage('dashboard')">
-                📊 Dashboard
-            </div>
-            <div class="nav-item" onclick="showPage('forms')">
-                📝 Form Builder
-            </div>
-            <div class="nav-item" onclick="showPage('offers')">
-                🎁 Quantity Offers
-            </div>
-            <div class="nav-item" onclick="showPage('upsells')">
-                💰 Upsells
-            </div>
-            <div class="nav-item" onclick="showPage('orders')">
-                📦 Orders
-            </div>
-            <div class="nav-item" onclick="showPage('analytics')">
-                📈 Analytics
-            </div>
-            <div class="nav-item" onclick="showPage('settings')">
-                ⚙️ Settings
-            </div>
+            <div class="nav-item active" data-page="dashboard">📊 Dashboard</div>
+            <div class="nav-item" data-page="forms">📝 Forms</div>
+            <div class="nav-item" data-page="orders">📦 Orders</div>
+            <div class="nav-item" data-page="offers">🎁 Offers</div>
+            <div class="nav-item" data-page="settings">⚙️ Settings</div>
         </div>
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Dashboard Page -->
+            <!-- Dashboard -->
             <div id="dashboard" class="page active">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Dashboard</h1>
-                
+                <h1 style="margin-bottom: 30px">Dashboard</h1>
+                <div id="dash-alert"></div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-label">Total Orders</div>
-                        <div class="stat-value">0</div>
-                        <div class="stat-change">+0% from last month</div>
+                        <div class="stat-label">Forms</div>
+                        <div class="stat-value" id="stat-forms">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Revenue</div>
-                        <div class="stat-value">$0</div>
-                        <div class="stat-change">+0% from last month</div>
+                        <div class="stat-label">Orders</div>
+                        <div class="stat-value" id="stat-orders">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Conversion Rate</div>
-                        <div class="stat-value">0%</div>
-                        <div class="stat-change">+0% from last month</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Active Forms</div>
-                        <div class="stat-value">0</div>
-                        <div class="stat-change">Create your first form!</div>
+                        <div class="stat-label">Offers</div>
+                        <div class="stat-value" id="stat-offers">0</div>
                     </div>
                 </div>
-                
-                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
-                    <h2 style="margin-bottom: 20px; color: #2d3748;">Getting Started</h2>
-                    <p style="color: #4a5568; line-height: 1.6; margin-bottom: 20px;">
-                        Welcome to COD Master Pro! Your backend is successfully connected and running. 
-                        Start by creating your first COD form.
-                    </p>
-                    <button class="btn" onclick="showPage('forms')">Create Your First Form</button>
+                <div style="background:white;padding:30px;border-radius:12px">
+                    <h2>Getting Started</h2>
+                    <p style="margin:15px 0;color:#718096">Your backend is connected! Create your first form.</p>
+                    <button class="btn" onclick="showPage('forms')">Create Form</button>
                 </div>
             </div>
             
-            <!-- Form Builder Page -->
+            <!-- Forms -->
             <div id="forms" class="page">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Form Builder</h1>
-                
-                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
-                    <h2 style="margin-bottom: 20px;">Create New COD Form</h2>
-                    
+                <h1 style="margin-bottom:30px">Forms</h1>
+                <div id="form-alert"></div>
+                <button class="btn" onclick="toggleFormBuilder()" style="margin-bottom:20px">+ New Form</button>
+                <div id="form-builder" style="display:none;background:white;padding:30px;border-radius:12px;margin-bottom:20px">
+                    <h3 style="margin-bottom:20px">Create Form</h3>
                     <div class="form-group">
-                        <label class="form-label">Form Name</label>
-                        <input type="text" class="form-input" placeholder="e.g., Standard COD Form">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="fname" class="form-input" placeholder="Standard COD Form">
                     </div>
-                    
                     <div class="form-group">
-                        <label class="form-label">Form Fields</label>
-                        <p style="color: #718096; margin-bottom: 10px;">Select fields to include:</p>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" checked> Customer Name
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" checked> Phone Number
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" checked> Delivery Address
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox"> Email (Optional)
-                        </label>
+                        <label class="form-label">Description</label>
+                        <textarea id="fdesc" class="form-textarea"></textarea>
                     </div>
-                    
-                    <button class="btn">Save Form</button>
-                    <button class="btn btn-secondary" style="margin-left: 10px;">Cancel</button>
+                    <button class="btn" onclick="saveForm()">Save</button>
+                    <button class="btn btn-secondary" onclick="toggleFormBuilder()" style="margin-left:10px">Cancel</button>
                 </div>
+                <div id="forms-list"><div class="loading"><div class="spinner"></div>Loading...</div></div>
             </div>
             
-            <!-- Orders Page -->
+            <!-- Orders -->
             <div id="orders" class="page">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Orders</h1>
-                
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" style="text-align: center; color: #718096; padding: 40px;">
-                                No orders yet. Start promoting your COD forms!
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h1 style="margin-bottom:30px">Orders</h1>
+                <div id="orders-list"><div class="loading"><div class="spinner"></div>Loading...</div></div>
             </div>
             
-            <!-- Other Pages (Placeholders) -->
+            <!-- Offers -->
             <div id="offers" class="page">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Quantity Offers</h1>
-                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
-                    <p style="color: #718096;">Create bulk discount offers (e.g., Buy 2 Get 10% Off)</p>
-                    <button class="btn" style="margin-top: 20px;">Create Offer</button>
-                </div>
+                <h1 style="margin-bottom:30px">Offers</h1>
+                <div id="offers-list"><div class="loading"><div class="spinner"></div>Loading...</div></div>
             </div>
             
-            <div id="upsells" class="page">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Upsells & Downsells</h1>
-                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
-                    <p style="color: #718096;">Increase average order value with upsells</p>
-                    <button class="btn" style="margin-top: 20px;">Create Upsell</button>
-                </div>
-            </div>
-            
-            <div id="analytics" class="page">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Analytics</h1>
-                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
-                    <p style="color: #718096;">Track your COD performance metrics</p>
-                </div>
-            </div>
-            
+            <!-- Settings -->
             <div id="settings" class="page">
-                <h1 style="margin-bottom: 30px; color: #2d3748;">Settings</h1>
-                
-                <div style="background: white; padding: 30px; border-radius: 12px;">
-                    <h2 style="margin-bottom: 20px;">App Configuration</h2>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Store Name</label>
-                        <input type="text" class="form-input" value="COD Test Store" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">API Status</label>
-                        <div style="display: flex; gap: 20px; padding: 15px; background: #f7fafc; border-radius: 8px;">
-                            <div>
-                                <strong>Server:</strong> <span style="color: #48bb78;">✅ Connected</span>
-                            </div>
-                            <div>
-                                <strong>Database:</strong> <span style="color: #48bb78;">✅ Connected</span>
-                            </div>
-                            <div>
-                                <strong>Shopify:</strong> <span style="color: #48bb78;">✅ Connected</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn">Save Settings</button>
+                <h1 style="margin-bottom:30px">Settings</h1>
+                <div style="background:white;padding:30px;border-radius:12px">
+                    <h3>API Status</h3>
+                    <div id="api-status" style="margin-top:20px"><div class="loading"><div class="spinner"></div>Checking...</div></div>
                 </div>
             </div>
         </div>
     </div>
     
     <script>
-        // Page navigation
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Remove active from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Show selected page
-            document.getElementById(pageId).classList.add('active');
-            
-            // Highlight active nav item
-            event.target.classList.add('active');
+        let forms=[],orders=[],offers=[];
+        
+        function showPage(p){
+            document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+            document.getElementById(p).classList.add('active');
+            document.querySelector(`[data-page="${p}"]`).classList.add('active');
+            loadPage(p);
         }
         
-        // Check API health on load
-        fetch('/api/health')
-            .then(res => res.json())
-            .then(data => {
-                console.log('API Health:', data);
-                if (data.database !== 'connected') {
-                    alert('Warning: Database not connected!');
+        function loadPage(p){
+            if(p==='dashboard')loadDash();
+            else if(p==='forms')loadForms();
+            else if(p==='orders')loadOrders();
+            else if(p==='offers')loadOffers();
+            else if(p==='settings')loadSettings();
+        }
+        
+        async function loadDash(){
+            try{
+                [forms,orders,offers]=await Promise.all([
+                    fetch('/api/forms').then(r=>r.json()).catch(()=>[]),
+                    fetch('/api/orders').then(r=>r.json()).catch(()=>[]),
+                    fetch('/api/offers').then(r=>r.json()).catch(()=>[])
+                ]);
+                document.getElementById('stat-forms').textContent=forms.length||0;
+                document.getElementById('stat-orders').textContent=orders.length||0;
+                document.getElementById('stat-offers').textContent=offers.length||0;
+            }catch(e){console.error(e)}
+        }
+        
+        async function loadForms(){
+            try{
+                forms=await fetch('/api/forms').then(r=>r.json()).catch(()=>[]);
+                const c=document.getElementById('forms-list');
+                if(!forms.length){
+                    c.innerHTML='<div style="background:white;padding:40px;border-radius:12px;text-align:center"><p style="color:#718096">No forms yet</p></div>';
+                }else{
+                    c.innerHTML=`<div class="form-list">${forms.map(f=>`
+                        <div class="form-item">
+                            <div class="form-item-info">
+                                <h3>${f.name}</h3>
+                                <p>${f.description||''}</p>
+                            </div>
+                            <button class="btn btn-danger" onclick="deleteForm('${f._id}')">Delete</button>
+                        </div>
+                    `).join('')}</div>`;
                 }
-            })
-            .catch(err => {
-                console.error('API Error:', err);
+            }catch(e){console.error(e)}
+        }
+        
+        async function loadOrders(){
+            try{
+                orders=await fetch('/api/orders').then(r=>r.json()).catch(()=>[]);
+                const c=document.getElementById('orders-list');
+                if(!orders.length){
+                    c.innerHTML='<table class="table"><thead><tr><th>ID</th><th>Customer</th><th>Date</th></tr></thead><tbody><tr><td colspan="3" style="text-align:center;padding:40px">No orders</td></tr></tbody></table>';
+                }else{
+                    c.innerHTML=`<table class="table"><thead><tr><th>ID</th><th>Customer</th><th>Status</th><th>Date</th></tr></thead><tbody>${orders.map(o=>`
+                        <tr>
+                            <td>#${o._id.slice(-6)}</td>
+                            <td>${o.customer?.name||'N/A'}</td>
+                            <td><span class="badge badge-pending">${o.status||'pending'}</span></td>
+                            <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('')}</tbody></table>`;
+                }
+            }catch(e){console.error(e)}
+        }
+        
+        async function loadOffers(){
+            try{
+                offers=await fetch('/api/offers').then(r=>r.json()).catch(()=>[]);
+                const c=document.getElementById('offers-list');
+                c.innerHTML=offers.length?`<div class="form-list">${offers.map(o=>`
+                    <div class="form-item">
+                        <div class="form-item-info"><h3>${o.name}</h3></div>
+                        <button class="btn btn-danger" onclick="deleteOffer('${o._id}')">Delete</button>
+                    </div>
+                `).join('')}</div>`:'<div style="background:white;padding:40px;border-radius:12px;text-align:center"><p style="color:#718096">No offers</p></div>';
+            }catch(e){console.error(e)}
+        }
+        
+        async function loadSettings(){
+            try{
+                const d=await fetch('/api/health').then(r=>r.json());
+                document.getElementById('api-status').innerHTML=`
+                    <div style="display:grid;gap:15px">
+                        <div><strong>Server:</strong> <span style="color:#48bb78">${d.server==='running'?'✅':' ❌'} ${d.server}</span></div>
+                        <div><strong>Database:</strong> <span style="color:#48bb78">${d.database==='connected'?'✅':'❌'} ${d.database}</span></div>
+                        <div><strong>Config:</strong> <span style="color:#48bb78">${d.mongodb_uri==='configured'?'✅':'❌'} ${d.mongodb_uri}</span></div>
+                    </div>
+                `;
+            }catch(e){console.error(e)}
+        }
+        
+        function toggleFormBuilder(){
+            const fb=document.getElementById('form-builder');
+            fb.style.display=fb.style.display==='none'?'block':'none';
+        }
+        
+        async function saveForm(){
+            const data={
+                name:document.getElementById('fname').value,
+                description:document.getElementById('fdesc').value,
+                fields:['name','phone','address'],
+                active:true
+            };
+            try{
+                const r=await fetch('/api/forms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+                if(r.ok){
+                    alert('Form created!');
+                    toggleFormBuilder();
+                    loadForms();
+                }
+            }catch(e){console.error(e)}
+        }
+        
+        async function deleteForm(id){
+            if(!confirm('Delete?'))return;
+            try{
+                await fetch(`/api/forms/${id}`,{method:'DELETE'});
+                loadForms();
+            }catch(e){console.error(e)}
+        }
+        
+        async function deleteOffer(id){
+            if(!confirm('Delete?'))return;
+            try{
+                await fetch(`/api/offers/${id}`,{method:'DELETE'});
+                loadOffers();
+            }catch(e){console.error(e)}
+        }
+        
+        document.addEventListener('DOMContentLoaded',()=>{
+            document.querySelectorAll('.nav-item').forEach(i=>i.addEventListener('click',e=>showPage(e.target.dataset.page)));
+            fetch('/api/health').then(r=>r.json()).then(d=>{
+                const s=document.getElementById('status-badge');
+                s.innerHTML=d.status==='ok'&&d.database==='connected'?'✅ Online':'⚠️ Issues';
             });
+            loadDash();
+        });
     </script>
 </body>
 </html>

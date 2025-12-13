@@ -2,7 +2,9 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const { shopifyApi, ApiVersion, Session } = require('@shopify/shopify-api');
+const { shopifyApi, ApiVersion } = require('@shopify/shopify-api');
+const { restResources } = require('@shopify/shopify-api/rest/admin/2023-04');
+require('@shopify/shopify-api/adapters/node'); // ← CRITICAL: Load Node.js adapter
 const { MemorySessionStorage } = require('@shopify/shopify-app-session-storage-memory');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -36,6 +38,7 @@ const shopify = shopifyApi({
   apiVersion: ApiVersion.April23,
   isEmbeddedApp: true,
   sessionStorage: new MemorySessionStorage(),
+  restResources,
 });
 
 // MongoDB Connection

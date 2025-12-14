@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Builder - COD Master Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f6f8;
+        }
+        
+        .page-header {
+            background: white;
+            border-bottom: 1px solid #e1e3e5;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .header-left p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e1e3e5;
+            color: #303030;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-bottom: 1px solid #e1e3e5;
+            padding: 0 32px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .tab {
+            padding: 16px 0;
+            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab:hover {
+            color: #667eea;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        /* Main Container */
+        .builder-container {
+            display: grid;
+            grid-template-columns: 1fr 480px;
+            gap: 0;
+            height: calc(100vh - 180px);
+        }
+        
+        /* Left Panel - Builder */
+        .builder-panel {
+            background: white;
+            border-right: 1px solid #e1e3e5;
+            overflow-y: auto;
+            padding: 32px;
+        }
+        
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .section-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        /* Form Type Selection */
+        .form-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .form-type-card {
+            border: 2px solid #e1e3e5;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .form-type-card:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+        
+        .form-type-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .form-type-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .form-type-name {
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .form-type-desc {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        /* Form Fields */
+        .form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .field-item {
+            background: white;
+            border: 1px solid #e1e3e5;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: move;
+            transition: all 0.2s;
+        }
+        
+        .field-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .field-drag {
+            color: #9ca3af;
+            cursor: move;
+            font-size: 18px;
+        }
+        
+        .field-icon {
+            width: 36px;
+            height: 36px;
+            background: #f0f4ff;
+            color: #667eea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .field-info {
+            flex: 1;
+        }
+        
+        .field-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+        
+        .field-type {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .field-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .field-action {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e1e3e5;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .field-action:hover {
+            background: #f9fafb;
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .field-toggle {
+            width: 44px;
+            height: 24px;
+            background: #e1e3e5;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .field-toggle.active {
+            background: #667eea;
+        }
+        
+        .field-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+        
+        .field-toggle.active::after {
+            left: 22px;
+        }
+        
+        /* Right Panel - Preview */
+        .preview-panel {
+            background: #1a1a1a;
+            padding: 32px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .preview-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .preview-subtitle {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        
+        /* Phone Mockup */
+        .phone-mockup {
+            max-width: 380px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .phone-notch {
+            width: 120px;
+            height: 24px;
+            background: #1a1a1a;
+            border-radius: 0 0 16px 16px;
+            margin: -20px auto 20px;
+        }
+        
+        .preview-form {
+            background: white;
+        }
+        
+        .preview-form-header {
+            text-align: center;
+            padding: 24px;
+            border-bottom: 1px solid #e1e3e5;
+        }
+        
+        .preview-form-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .preview-form-desc {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .preview-form-fields {
+            padding: 24px;
+        }
+        
+        .preview-field {
+            margin-bottom: 20px;
+        }
+        
+        .preview-field-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #303030;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .preview-field-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e1e3e5;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .preview-field-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .preview-field-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .preview-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 24px;
+        }
+        
+        /* Input Fields */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #303030;
+            margin-bottom: 8px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e1e3e5;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* Add Field Button */
+        .add-field-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #e1e3e5;
+            border-radius: 8px;
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .add-field-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1>📝 Form Builder</h1>
+            <p>Create beautiful COD forms for your customers</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveForm()">💾 Save Form</button>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <div class="tab active">
+                <span>🛠️</span>
+                <span>Form Builder</span>
+            </div>
+            <div class="tab">
+                <span>🚚</span>
+                <span>Shipping Rates</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Builder Container -->
+    <div class="builder-container">
+        <!-- Left Panel - Builder -->
+        <div class="builder-panel">
+            <!-- Form Name -->
+            <div class="section">
+                <div class="section-title">Form Settings</div>
+                <div class="input-group">
+                    <label class="input-label">Form Name</label>
+                    <input type="text" class="input-field" id="form-name" value="Standard COD Form" placeholder="Enter form name">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Form Description (Optional)</label>
+                    <input type="text" class="input-field" id="form-desc" placeholder="Brief description of this form">
+                </div>
+            </div>
+            
+            <!-- Form Type -->
+            <div class="section">
+                <div class="section-title">Form Type</div>
+                <p class="section-description">Choose how the form will be displayed to customers</p>
+                <div class="form-types">
+                    <div class="form-type-card selected" data-type="popup">
+                        <div class="form-type-icon">📱</div>
+                        <div class="form-type-name">Pop-up Form</div>
+                        <p class="form-type-desc">Displays on page, no button click required</p>
+                    </div>
+                    <div class="form-type-card" data-type="embedded">
+                        <div class="form-type-icon">📄</div>
+                        <div class="form-type-name">Embedded Form</div>
+                        <p class="form-type-desc">Appears on page without button click</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Fields -->
+            <div class="section">
+                <div class="section-title">Form Fields</div>
+                <p class="section-description">Drag to reorder • Click icons to customize • Toggle to enable/disable</p>
+                
+                <div class="form-fields" id="form-fields">
+                    <!-- Field: Form Title -->
+                    <div class="field-item" draggable="true" data-field="title">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">📝</div>
+                        <div class="field-info">
+                            <div class="field-name">Form Title</div>
+                            <div class="field-type">Header text</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('title')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('title')" title="Duplicate">📋</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'title')"></div>
+                    </div>
+                    
+                    <!-- Field: First Name -->
+                    <div class="field-item" draggable="true" data-field="firstname">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">👤</div>
+                        <div class="field-info">
+                            <div class="field-name">First Name</div>
+                            <div class="field-type">Text input • Required</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('firstname')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('firstname')" title="Duplicate">📋</div>
+                            <div class="field-action" onclick="deleteField('firstname')" title="Delete">🗑️</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'firstname')"></div>
+                    </div>
+                    
+                    <!-- Field: Phone -->
+                    <div class="field-item" draggable="true" data-field="phone">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">📞</div>
+                        <div class="field-info">
+                            <div class="field-name">Phone Number</div>
+                            <div class="field-type">Phone input • Required</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('phone')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('phone')" title="Duplicate">📋</div>
+                            <div class="field-action" onclick="deleteField('phone')" title="Delete">🗑️</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'phone')"></div>
+                    </div>
+                    
+                    <!-- Field: Shipping Options -->
+                    <div class="field-item" draggable="true" data-field="shipping">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">🚚</div>
+                        <div class="field-info">
+                            <div class="field-name">Shipping Options</div>
+                            <div class="field-type">Radio select</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('shipping')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('shipping')" title="Duplicate">📋</div>
+                            <div class="field-action" onclick="deleteField('shipping')" title="Delete">🗑️</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'shipping')"></div>
+                    </div>
+                    
+                    <!-- Field: Total Price -->
+                    <div class="field-item" draggable="true" data-field="total">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">💰</div>
+                        <div class="field-info">
+                            <div class="field-name">Total Price</div>
+                            <div class="field-type">Display only</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('total')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('total')" title="Duplicate">📋</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'total')"></div>
+                    </div>
+                    
+                    <!-- Field: Quantity/Offers -->
+                    <div class="field-item" draggable="true" data-field="quantity">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">🎁</div>
+                        <div class="field-info">
+                            <div class="field-name">Cart Content / Quantity Offers</div>
+                            <div class="field-type">Product selector</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('quantity')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('quantity')" title="Duplicate">📋</div>
+                            <div class="field-action" onclick="deleteField('quantity')" title="Delete">🗑️</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'quantity')"></div>
+                    </div>
+                    
+                    <!-- Field: Order Summary -->
+                    <div class="field-item" draggable="true" data-field="summary">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">📋</div>
+                        <div class="field-info">
+                            <div class="field-name">Order Summary</div>
+                            <div class="field-type">Summary display</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('summary')" title="Edit">✏️</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'summary')"></div>
+                    </div>
+                    
+                    <!-- Field: Address -->
+                    <div class="field-item" draggable="true" data-field="address">
+                        <span class="field-drag">⋮⋮</span>
+                        <div class="field-icon">📍</div>
+                        <div class="field-info">
+                            <div class="field-name">Delivery Address</div>
+                            <div class="field-type">Text area • Required</div>
+                        </div>
+                        <div class="field-actions">
+                            <div class="field-action" onclick="editField('address')" title="Edit">✏️</div>
+                            <div class="field-action" onclick="duplicateField('address')" title="Duplicate">📋</div>
+                            <div class="field-action" onclick="deleteField('address')" title="Delete">🗑️</div>
+                        </div>
+                        <div class="field-toggle active" onclick="toggleField(this, 'address')"></div>
+                    </div>
+                </div>
+                
+                <button class="add-field-btn" onclick="addNewField()">
+                    ➕ Add New Field
+                </button>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Preview -->
+        <div class="preview-panel">
+            <div class="preview-header">
+                <h2 class="preview-title">📱 Live Preview</h2>
+                <p class="preview-subtitle">See how your form looks to customers</p>
+            </div>
+            
+            <div class="phone-mockup">
+                <div class="phone-notch"></div>
+                
+                <div class="preview-form">
+                    <div class="preview-form-header">
+                        <h3 class="preview-form-title" id="preview-title">Complete Your Order</h3>
+                        <p class="preview-form-desc" id="preview-desc">Fill in the details below to place your order</p>
+                    </div>
+                    
+                    <div class="preview-form-fields" id="preview-fields">
+                        <!-- First Name -->
+                        <div class="preview-field" data-field="firstname">
+                            <label class="preview-field-label">First Name *</label>
+                            <input type="text" class="preview-field-input" placeholder="Enter your name">
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div class="preview-field" data-field="phone">
+                            <label class="preview-field-label">Phone Number *</label>
+                            <input type="tel" class="preview-field-input" placeholder="+1 (555) 000-0000">
+                        </div>
+                        
+                        <!-- Shipping -->
+                        <div class="preview-field" data-field="shipping">
+                            <label class="preview-field-label">Shipping Method</label>
+                            <select class="preview-field-input">
+                                <option>Standard Shipping - $5.00</option>
+                                <option>Express Shipping - $15.00</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div class="preview-field" data-field="address">
+                            <label class="preview-field-label">Delivery Address *</label>
+                            <textarea class="preview-field-input preview-field-textarea" placeholder="Enter your full delivery address"></textarea>
+                        </div>
+                        
+                        <!-- Total -->
+                        <div class="preview-field" data-field="total" style="background: #f9fafb; padding: 16px; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="preview-field-label" style="margin: 0;">Total Amount:</span>
+                                <span style="font-size: 24px; font-weight: 700; color: #667eea;">$29.99</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <button class="preview-submit">
+                            🛒 Place Order - Pay on Delivery
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Form type selection
+        document.querySelectorAll('.form-type-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.form-type-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+            });
+        });
+        
+        // Toggle field on/off
+        function toggleField(toggle, fieldName) {
+            toggle.classList.toggle('active');
+            const previewField = document.querySelector(`.preview-field[data-field="${fieldName}"]`);
+            if (previewField) {
+                previewField.style.display = toggle.classList.contains('active') ? 'block' : 'none';
+            }
+        }
+        
+        // Edit field
+        function editField(fieldName) {
+            alert(`Edit ${fieldName} field - Coming soon!`);
+        }
+        
+        // Duplicate field
+        function duplicateField(fieldName) {
+            alert(`Duplicate ${fieldName} field - Coming soon!`);
+        }
+        
+        // Delete field
+        function deleteField(fieldName) {
+            if (confirm(`Delete this field?`)) {
+                const field = document.querySelector(`.field-item[data-field="${fieldName}"]`);
+                if (field) field.remove();
+                const previewField = document.querySelector(`.preview-field[data-field="${fieldName}"]`);
+                if (previewField) previewField.remove();
+            }
+        }
+        
+        // Add new field
+        function addNewField() {
+            alert('Add new field - Coming soon!\n\nAvailable field types:\n• Text input\n• Email\n• Phone\n• Dropdown\n• Checkbox\n• Text area');
+        }
+        
+        // Update preview title
+        document.getElementById('form-name').addEventListener('input', (e) => {
+            document.getElementById('preview-title').textContent = e.target.value || 'Complete Your Order';
+        });
+        
+        document.getElementById('form-desc').addEventListener('input', (e) => {
+            document.getElementById('preview-desc').textContent = e.target.value || 'Fill in the details below to place your order';
+        });
+        
+        // Drag and drop
+        let draggedElement = null;
+        
+        document.querySelectorAll('.field-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedElement = item;
+                item.style.opacity = '0.5';
+            });
+            
+            item.addEventListener('dragend', (e) => {
+                item.style.opacity = '1';
+            });
+            
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedElement !== item) {
+                    const container = item.parentNode;
+                    const draggedIndex = [...container.children].indexOf(draggedElement);
+                    const targetIndex = [...container.children].indexOf(item);
+                    
+                    if (draggedIndex < targetIndex) {
+                        container.insertBefore(draggedElement, item.nextSibling);
+                    } else {
+                        container.insertBefore(draggedElement, item);
+                    }
+                }
+            });
+        });
+        
+        // Save form
+        async function saveForm() {
+            const formData = {
+                name: document.getElementById('form-name').value,
+                description: document.getElementById('form-desc').value,
+                type: document.querySelector('.form-type-card.selected').dataset.type,
+                fields: [],
+                active: true
+            };
+            
+            // Collect active fields
+            document.querySelectorAll('.field-item').forEach(item => {
+                const toggle = item.querySelector('.field-toggle');
+                if (toggle.classList.contains('active')) {
+                    formData.fields.push({
+                        name: item.dataset.field,
+                        type: item.querySelector('.field-type').textContent,
+                        required: item.querySelector('.field-type').textContent.includes('Required')
+                    });
+                }
+            });
+            
+            try {
+                const response = await fetch('/api/forms', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    alert('✅ Form saved successfully!');
+                    // Redirect back or show success
+                } else {
+                    alert('❌ Failed to save form');
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('❌ Error saving form');
+            }
+        }
+        
+        function cancelForm() {
+            if (confirm('Discard changes?')) {
+                window.history.back();
+            }
+        }
+    </script>
+</body>
+</html>

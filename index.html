@@ -86,12 +86,13 @@
         
         .main-content {
             flex: 1;
+            background: #f4f6f8;
+            overflow-y: auto;
         }
         
-        #page-frame {
+        #page-container {
             width: 100%;
-            height: calc(100vh - 48px);
-            border: none;
+            min-height: calc(100vh - 48px);
         }
     </style>
 </head>
@@ -143,7 +144,7 @@
         </div>
         
         <div class="main-content">
-            <iframe id="page-frame" src="pages/home.html"></iframe>
+            <div id="page-container"></div>
         </div>
     </div>
     
@@ -152,14 +153,43 @@
         const shop = urlParams.get('shop');
         if (shop) document.getElementById('store-name').textContent = shop;
         
+        // Load page function
+        async function loadPage(pageName) {
+            try {
+                const response = await fetch(`src/pages/${pageName}.html`);
+                const html = await response.text();
+                document.getElementById('page-container').innerHTML = html;
+                
+                // Execute any scripts in the loaded page
+                const scripts = document.getElementById('page-container').querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.textContent;
+                    script.parentNode.replaceChild(newScript, script);
+                });
+            } catch (error) {
+                console.error('Failed to load page:', error);
+                document.getElementById('page-container').innerHTML = `
+                    <div style="padding: 40px; text-align: center;">
+                        <h2>⚠️ Page Not Found</h2>
+                        <p style="color: #6b7280; margin-top: 10px;">The page "${pageName}" could not be loaded.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Navigation
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const page = item.getAttribute('data-page');
-                document.getElementById('page-frame').src = `src/pages/${page}.html`;
+                loadPage(page);
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 item.classList.add('active');
             });
         });
+        
+        // Load home page on startup
+        loadPage('home');
     </script>
 </body>
 </html>

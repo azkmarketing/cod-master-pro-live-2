@@ -155,7 +155,7 @@
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const page = item.getAttribute('data-page');
-                document.getElementById('page-frame').src = `pages/${page}.html`;
+                document.getElementById('page-frame').src = `src/pages/${page}.html`;
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 item.classList.add('active');
             });

@@ -20,9 +20,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
         
         .app-logo {
@@ -43,34 +40,26 @@
             cursor: pointer;
         }
         
-        .app-container {
-            display: flex;
-            min-height: calc(100vh - 48px);
-        }
-        
-        .sidebar {
-            width: 280px;
+        /* Top Navigation Tabs */
+        .top-nav {
             background: white;
-            border-right: 1px solid #e1e3e5;
-            padding: 24px 0;
-        }
-        
-        .sidebar-label {
-            padding: 0 24px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            margin: 20px 0 8px;
+            border-bottom: 1px solid #e1e3e5;
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
         }
         
         .nav-item {
-            padding: 12px 24px;
-            display: flex;
+            padding: 16px 24px;
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             cursor: pointer;
-            border-left: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s;
         }
         
         .nav-item:hover {
@@ -79,24 +68,23 @@
         }
         
         .nav-item.active {
-            background: #f0f4ff;
             color: #667eea;
-            border-left-color: #667eea;
+            border-bottom-color: #667eea;
+            background: #f0f4ff;
         }
         
         .main-content {
-            flex: 1;
             background: #f4f6f8;
-            overflow-y: auto;
+            min-height: calc(100vh - 110px);
         }
         
         #page-container {
             width: 100%;
-            min-height: calc(100vh - 48px);
         }
     </style>
 </head>
 <body>
+    <!-- Top Header -->
     <div class="top-header">
         <div style="display: flex; align-items: center; gap: 12px;">
             <div class="app-logo">💎 COD Master Pro</div>
@@ -105,47 +93,40 @@
         <button class="upgrade-btn">⚡ Upgrade</button>
     </div>
     
-    <div class="app-container">
-        <div class="sidebar">
-            <div class="sidebar-label">Main</div>
-            <div class="nav-item active" data-page="home">
-                <span>🏠</span><span>Home</span>
-            </div>
-            <div class="nav-item" data-page="analytics">
-                <span>📊</span><span>Analytics</span>
-            </div>
-            
-            <div class="sidebar-label">Forms & Orders</div>
-            <div class="nav-item" data-page="form-builder">
-                <span>📝</span><span>Form Builder</span>
-            </div>
-            <div class="nav-item" data-page="quantity-offers">
-                <span>🎁</span><span>Quantity Offers</span>
-            </div>
-            <div class="nav-item" data-page="upsells">
-                <span>💰</span><span>Upsells</span>
-            </div>
-            
-            <div class="sidebar-label">Management</div>
-            <div class="nav-item" data-page="orders">
-                <span>📦</span><span>Orders</span>
-            </div>
-            <div class="nav-item" data-page="integrations">
-                <span>🔗</span><span>Integrations</span>
-            </div>
-            
-            <div class="sidebar-label">Settings</div>
-            <div class="nav-item" data-page="settings">
-                <span>⚙️</span><span>Settings</span>
-            </div>
-            <div class="nav-item" data-page="plan">
-                <span>💎</span><span>Plan</span>
-            </div>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-item active" data-page="home">
+            <span>🏠</span><span>Home</span>
         </div>
-        
-        <div class="main-content">
-            <div id="page-container"></div>
+        <div class="nav-item" data-page="analytics">
+            <span>📊</span><span>Analytics</span>
         </div>
+        <div class="nav-item" data-page="form-builder">
+            <span>📝</span><span>Form Builder</span>
+        </div>
+        <div class="nav-item" data-page="quantity-offers">
+            <span>🎁</span><span>Quantity Offers</span>
+        </div>
+        <div class="nav-item" data-page="upsells">
+            <span>💰</span><span>Upsells</span>
+        </div>
+        <div class="nav-item" data-page="orders">
+            <span>📦</span><span>Orders</span>
+        </div>
+        <div class="nav-item" data-page="integrations">
+            <span>🔗</span><span>Integrations</span>
+        </div>
+        <div class="nav-item" data-page="settings">
+            <span>⚙️</span><span>Settings</span>
+        </div>
+        <div class="nav-item" data-page="plan">
+            <span>💎</span><span>Plan</span>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div id="page-container"></div>
     </div>
     
     <script>
@@ -160,7 +141,7 @@
                 const html = await response.text();
                 document.getElementById('page-container').innerHTML = html;
                 
-                // Execute any scripts in the loaded page
+                // Execute scripts
                 const scripts = document.getElementById('page-container').querySelectorAll('script');
                 scripts.forEach(script => {
                     const newScript = document.createElement('script');
@@ -188,7 +169,7 @@
             });
         });
         
-        // Load home page on startup
+        // Load home page
         loadPage('home');
     </script>
 </body>
